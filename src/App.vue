@@ -3,9 +3,7 @@
 </script>
 
 <template>
-  <div class="tw-bg-red-700 tw-text-8xl">
-    hello
-  </div>
+  <RouterView />
 </template>
 
 <style>
