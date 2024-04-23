@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import axios from 'axios'
 import router from '@/router'
 
@@ -14,24 +14,35 @@ const login: type = reactive(
     username: '',
     password: ''
   })
-const loading =ref<boolean>(false)
+const loading = ref<boolean>(false)
+const errorValue = ref('')
+const datailError = ref('')
+
+
 const submit = async () => {
-  loading.value =true;
+  loading.value = true
   await axios.post('http://127.0.0.1:8001/jwt/create/', {
     username: login.username,
-    password: login.password,
-  }).then((response: any) => {
-    console.log(response)
-     loading.value = false;
-    localStorage.setItem('login', login.username);
-    router.push({ name: 'TheWelcome' });
-  }).catch((error: any) => {
-    console.log(error)
-  }).finally(()=> {
-    loading.value = false;
+    password: login.password
+  }).then((response) => {
+    console.log(response.data)
+    errorValue.value =''
+    datailError.value=''
+    loading.value = false
+    localStorage.setItem('login', login.username)
+    router.push({ name: 'TheWelcome' })
+  }).catch((error) => {
+    if (error.response.data.detail) {
+      datailError.value = error.response.data
+    }
+    else {
+      errorValue.value = error.response.data
+    }
+
+  }).finally(() => {
+    loading.value = false
   })
 }
-
 
 </script>
 
@@ -41,20 +52,23 @@ const submit = async () => {
       <h1 class="tw-text-center tw-text-3xl tw-font-bold">Welcome back!</h1>
       <div class="tw-text-center tw-text-sm tw-font-light tw-mb-10 tw-text-purple-900">please enter your login detail
       </div>
-      <label class="input" >
+      <label class="input">
         <i class="fa fa-user tw-mr-2" />
         <input v-model="login.username" placeholder="Username" type="text" class="input-value">
       </label>
+      <div v-if="errorValue" class="tw-text-red-600 tw-italic tw-text-xs">{{ errorValue.username[0] }}</div>
+      <div v-if="datailError" class="tw-text-red-600 tw-italic tw-text-xs">{{ datailError.detail }}</div>
       <label class="input">
         <i class="fa fa-eye tw-mr-2" />
         <input v-model="login.password" placeholder="Password" type="password" class="input-value" />
       </label>
+      <div v-if="errorValue" class="tw-text-red-600 tw-italic tw-text-xs">{{ errorValue.password[0]}}</div>
       <div class="tw-mb-5"><input type="checkbox">
         <label class="tw-pl-2">Remember me</label></div>
       <button :disabled="loading" @click="submit">
-      <span v-if="loading">Loading...</span>
-      <span v-else>Login</span>
-    </button>
+        <span v-if="loading">Loading...</span>
+        <span v-else>Login</span>
+      </button>
       <div class="tw-text-right tw-text-[12px] tw-cursor-pointer">Forget Password?</div>
       <div class="tw-text-center">Need an account?
         <router-link to="/signup"> <span class="tw-text-purple-900 tw-cursor-pointer tw-font-semibold">Sign Up
@@ -71,7 +85,8 @@ const submit = async () => {
   padding: 5px;
   outline: none;
 }
-.input-value{
+
+.input-value {
   outline: none;
 }
 
