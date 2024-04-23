@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {reactive, ref} from "vue";
-import axios from "axios";
+import { reactive, ref } from 'vue'
+import axios from 'axios'
 
 const response_value = ref('')
 
@@ -11,11 +11,11 @@ interface type {
 }
 
 const login: type = reactive(
-    {
-      username: "",
-      password: "",
-      email: "",
-    })
+  {
+    username: '',
+    password: '',
+    email: ''
+  })
 
 const submit = () => {
   axios.post('http://127.0.0.1:8000/api/users/', {
@@ -24,9 +24,9 @@ const submit = () => {
     password: login.password
   }).then((response: any) => {
     response = response_value.value
-    login.email = "",
-        login.username = "",
-        login.password = ""
+    login.email = '',
+      login.username = '',
+      login.password = ''
   }).catch((error: any) => {
     console.log(error)
   })
@@ -41,16 +41,16 @@ const submit = () => {
         sign In and start managing your daily routine
       </div>
       <label class="input">
-        <i class="fa fa-envelope tw-mr-2"/>
-        <input v-model="login.email" placeholder="Email" type="text"/>
+        <i class="fa fa-envelope tw-mr-2" />
+        <input v-model="login.email" placeholder="Email" type="text" class="input-value"  />
       </label>
       <label class="input">
-        <i class="fa fa-user tw-mr-2"/>
-        <input v-model="login.username" placeholder="Username" type="text"/>
+        <i class="fa fa-user tw-mr-2" />
+        <input v-model="login.username" placeholder="Username" type="text" class="input-value" />
       </label>
       <label class="input">
-        <i class="fas fa-eye tw-mr-2"/>
-        <input v-model="login.password" placeholder="Password" type="password"/>
+        <i class="fas fa-eye tw-mr-2" />
+        <input v-model="login.password" placeholder="Password" type="password" class="input-value" />
       </label>
       <button @click="submit" class="tw-my-5">Signup</button>
       <div class="tw-text-center">Already have account?
@@ -67,6 +67,11 @@ const submit = () => {
   border: 1px solid black;
   border-radius: 5px;
   padding: 5px;
+  outline: none;
+}
+
+.input-value {
+  outline: none;
 }
 
 button {
